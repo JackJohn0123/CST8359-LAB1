@@ -17,23 +17,33 @@ namespace Lab1
 				switch (c)
 				{
 					case "1":
-					wordList = readFile();
+						wordList = readFile();
 						break;
 					case "2":
+						BubbleSort(wordList);
+						if (wordList.Count != 0) { wordList = ResetArray(); } //reset the array
 						break;
 					case "3":
+						LINQSort(wordList);
+						if (wordList.Count != 0) { wordList = ResetArray(); } //reset the array
 						break;
 					case "4":
+						CountDistinctWords(wordList);
 						break;
 					case "5":
+						FirstFiftyWords(wordList);
 						break;
 					case "6":
+						ReversePrintWords(wordList);
 						break;
 					case "7":
+						FindAAndCount(wordList);
 						break;
 					case "8":
+						FindMAndCount(wordList);
 						break;
 					case "9":
+						UnderFourWithIAndDisplayCount(wordList);
 						break;
 					case "x":
 						return;
@@ -66,29 +76,109 @@ namespace Lab1
 			return wordList;
 		}
 
-
-		static void BubbleSortWords(IList<string> words)
+		static IList<string> BubbleSort(IList<string> words)
 		{
+			if (words.Count == 0)
+			{
+				Console.WriteLine("Please load words first!");
+				return words;
+			}
+
 			
-			
+				Stopwatch time = new Stopwatch();
+				time.Start();
+				String temp;
+				var sortedNames = words;
+
+				for (int j = 0; j < words.Count - 1; j++)
+				{
+					for (int i = j + 1; i < words.Count; i++)
+					{
+						if (words[j].CompareTo(words[i]) > 0)
+						{
+							temp = words[j];
+							words[j] = words[i];
+							words[i] = temp;
+						}
+					}
+				}
+
+				time.Stop();
+				Console.WriteLine(Math.Round(time.Elapsed.TotalMilliseconds) + " MS to sort.");
+				return words;
 		}
 
-		static void LambdaSortWords(IList<string> words)
+		static IList<string> LINQSort(IList<string> words)
 		{
-			 
-		}
+				if (words.Count == 0)
+				{
+					Console.WriteLine("Please load words first!");
+					return words;
+				}
+				Stopwatch w = new Stopwatch();
+				w.Start();
+				var sortedNames = words.OrderBy(d => d);
+				w.Stop();
+				Console.WriteLine(Math.Round(w.Elapsed.TotalMilliseconds) + " MS to sort.");
+				return words;
+
+			}
+
 		static void CountDistinctWords(IList<string> words)
 		{
+			if (words.Count == 0)
+			{
+				Console.WriteLine("Please load words first!");
+				return;
+			}
+			Console.WriteLine(words.Distinct().Count() + " distinct words found");
 		}
 		static void FirstFiftyWords(IList<string> words)
 		{
+			if (words.Count == 0)
+			{
+				Console.WriteLine("Please load words first!");
+				return;
+			}
+			foreach (var word in words.Distinct().Take(50))
+			{
+				Console.WriteLine(word);
+			}
 		}
 		static void ReversePrintWords(IList<string> words)
 		{
+			if (words.Count == 0)
+			{
+				Console.WriteLine("Please load words first!");
+				return;
+			}
 
+			foreach (var word in words.Reverse())
+			{
+				Console.WriteLine(word);
+			}
 		}
 		static void FindAAndCount(IList<string> words)
 		{
+			if (words.Count == 0)
+			{
+				Console.WriteLine("Please load words first!");
+				return;
+			}
+			
+				int count = 0;
+				List<string> wordsEndingWithA = new List<string>();
+				foreach (var word in words.Where(word => word.EndsWith("a")))
+				{
+					wordsEndingWithA.Add(word);
+					count++;
+				}
+				Console.WriteLine("The " + count + " words that end with 'a' are:");
+
+				for (int i = 0; i < count; i++)
+				{
+					Console.WriteLine(wordsEndingWithA[i]);
+				}
 
 			
 
@@ -97,13 +187,55 @@ namespace Lab1
 		static void FindMAndCount(IList<string> words)
 		{
 
+			if (words.Count == 0)
+			{
+				Console.WriteLine("Please load words first!");
+				return;
+			}
+			
+				int count = 0;
+				List<string> wordsEndingWithA = new List<string>();
+				foreach (var word in words.Where(word => word.StartsWith("m")))
+				{
+					wordsEndingWithA.Add(word);
+					count++;
+				}
+				Console.WriteLine("The " + count + " words that start with the letter 'm' are::");
 
+				for (int i = 0; i < count; i++)
+				{
+					Console.WriteLine(wordsEndingWithA[i]);
+				}
+			
 		}
 
 		static void UnderFourWithIAndDisplayCount(IList<string> words)
 		{
+			if (words.Count == 0)
+			{
+				Console.WriteLine("Please load words first!");
+				return;
+			}
+			int count = 0;
+			List<string> wordsEndingWithA = new List<string>();
+			foreach (var word in words.Where(word => word.Contains("i") && word.Length < 4))
+			{
+				wordsEndingWithA.Add(word);
+				count++;
+			}
+			Console.WriteLine("The " + count + " words that have less than 4 characters and include the letter 'i' are:");
+
+			for (int i = 0; i < count; i++)
+			{
+				Console.WriteLine(wordsEndingWithA[i]);
+			}
 
 		}
-		
+		private static IList<string> ResetArray()
+		{
+			List<string> allLinesText = File.ReadAllLines("Words.txt").ToList();
+			return allLinesText;
+		}
+
 	}
 }
